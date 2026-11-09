@@ -17,16 +17,27 @@ If you are developing a production application, we recommend enabling type-aware
 
 ```json
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["react", "typescript", "oxc"],
+    "options": {
+        "typeAware": true
+    },
+    "rules": {
+        "react/rules-of-hooks": "error",
+        "react/only-export-components": ["warn", { "allowConstantExport": true }]
+    }
 }
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+## Frontend environments
+
+Vite modes select the matching `.env.<mode>` file:
+
+- `npm run dev` — local frontend and local API (`.env.dev`).
+- `npm run dev:staging` — local frontend and host/staging API (`.env.staging`).
+- `npm run build` — create a production build (`.env.production`).
+- `npm run build:staging` — create a staging build (`.env.staging`).
+
+Set `VITE_API_URL` and `VITE_GOOGLE_CLIENT_ID` in the selected file.

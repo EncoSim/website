@@ -1,10 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import "./index.css";
+import App from "./App.tsx";
+import { useAuthStore } from "./stores/auth.store";
+import { config } from "./config.ts";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// Start cookie-based session restoration immediately on every page visit.
+void useAuthStore.getState().initialize();
+
+const clientId = config.googleClientId;
+
+createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+        {clientId ? (
+            <GoogleOAuthProvider clientId={clientId}>
+                <App />
+            </GoogleOAuthProvider>
+        ) : (
+            <App />
+        )}
+    </StrictMode>,
+);

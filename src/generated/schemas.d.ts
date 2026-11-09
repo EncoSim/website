@@ -349,8 +349,8 @@ export interface components {
             /** Charisma */
             charisma: number;
         };
-        /** BannedBody */
-        BannedBody: {
+        /** BannedApiErrorModel */
+        BannedApiErrorModel: {
             /**
              * Code
              * @description machine-readable error code
@@ -396,8 +396,8 @@ export interface components {
             version: number;
             data: components["schemas"]["EntityConfig"];
         };
-        /** CharacterOutdatedBody */
-        CharacterOutdatedBody: {
+        /** CharacterOutdatedApiErrorModel */
+        CharacterOutdatedApiErrorModel: {
             /**
              * Code
              * @description machine-readable error code
@@ -526,8 +526,8 @@ export interface components {
             /** Vulnerabilities */
             vulnerabilities: components["schemas"]["DamageType"][];
         };
-        /** InvalidGoogleTokenBody */
-        InvalidGoogleTokenBody: {
+        /** InvalidGoogleTokenApiErrorModel */
+        InvalidGoogleTokenApiErrorModel: {
             /**
              * Code
              * @description machine-readable error code
@@ -540,8 +540,8 @@ export interface components {
              */
             message: string;
         };
-        /** InvalidSessionBody */
-        InvalidSessionBody: {
+        /** InvalidSessionApiErrorModel */
+        InvalidSessionApiErrorModel: {
             /**
              * @description machine-readable error code (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -589,8 +589,8 @@ export interface components {
             /** Sessions */
             sessions: components["schemas"]["SessionSchema"][];
         };
-        /** NotFoundBody */
-        NotFoundBody: {
+        /** NotFoundApiErrorModel */
+        NotFoundApiErrorModel: {
             /**
              * Code
              * @description machine-readable error code
@@ -732,8 +732,8 @@ export interface components {
             proficiency: number;
             modifiers: components["schemas"]["AttributeData"];
         };
-        /** TooManyCharactersBody */
-        TooManyCharactersBody: {
+        /** TooManyCharactersApiErrorModel */
+        TooManyCharactersApiErrorModel: {
             /**
              * Code
              * @description machine-readable error code
@@ -748,8 +748,8 @@ export interface components {
             /** @description error-specific payload */
             detail: components["schemas"]["AllowedNumberDetail"];
         };
-        /** TooManyParticipantsBody */
-        TooManyParticipantsBody: {
+        /** TooManyParticipantsApiErrorModel */
+        TooManyParticipantsApiErrorModel: {
             /**
              * @description machine-readable error code (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -763,8 +763,8 @@ export interface components {
             /** @description error-specific payload */
             detail: components["schemas"]["AllowedNumberDetail"];
         };
-        /** TooManyRepetitionsBody */
-        TooManyRepetitionsBody: {
+        /** TooManyRepetitionsApiErrorModel */
+        TooManyRepetitionsApiErrorModel: {
             /**
              * @description machine-readable error code (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -778,8 +778,8 @@ export interface components {
             /** @description error-specific payload */
             detail: components["schemas"]["AllowedNumberDetail"];
         };
-        /** TooManySimulationsBody */
-        TooManySimulationsBody: {
+        /** TooManySimulationsApiErrorModel */
+        TooManySimulationsApiErrorModel: {
             /**
              * Code
              * @description machine-readable error code
@@ -794,8 +794,8 @@ export interface components {
             /** @description error-specific payload */
             detail: components["schemas"]["AllowedNumberDetail"];
         };
-        /** UnauthorizedBody */
-        UnauthorizedBody: {
+        /** UnauthorizedApiErrorModel */
+        UnauthorizedApiErrorModel: {
             /**
              * @description machine-readable error code (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -884,7 +884,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidGoogleTokenBody"];
+                    "application/json": components["schemas"]["InvalidGoogleTokenApiErrorModel"];
                 };
             };
             /** @description `banned`: User was banned */
@@ -893,7 +893,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BannedBody"];
+                    "application/json": components["schemas"]["BannedApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -936,7 +936,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidSessionBody"];
+                    "application/json": components["schemas"]["InvalidSessionApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1006,7 +1006,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidSessionBody"] | components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["InvalidSessionApiErrorModel"] | components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
         };
@@ -1038,7 +1038,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidSessionBody"] | components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["InvalidSessionApiErrorModel"] | components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1078,7 +1078,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InvalidSessionBody"] | components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["InvalidSessionApiErrorModel"] | components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1087,7 +1087,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1127,7 +1127,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
         };
@@ -1162,7 +1162,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `too_many_characters`: User already has maximum number of characters */
@@ -1171,7 +1171,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TooManyCharactersBody"];
+                    "application/json": components["schemas"]["TooManyCharactersApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1213,7 +1213,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1222,7 +1222,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1268,7 +1268,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1277,7 +1277,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description `character_outdated`: Server already has a character with a newer version */
@@ -1286,7 +1286,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CharacterOutdatedBody"];
+                    "application/json": components["schemas"]["CharacterOutdatedApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1328,7 +1328,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1337,7 +1337,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1377,7 +1377,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"] | components["schemas"]["InvalidSessionBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"] | components["schemas"]["InvalidSessionApiErrorModel"];
                 };
             };
         };
@@ -1408,7 +1408,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"] | components["schemas"]["InvalidSessionBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"] | components["schemas"]["InvalidSessionApiErrorModel"];
                 };
             };
         };
@@ -1439,7 +1439,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
         };
@@ -1474,7 +1474,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `too_many_participants`: Exceeded total number of allowed simulation participants; `too_many_repetitions`: Exceeded total number of allowed simulation repetitions */
@@ -1483,7 +1483,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TooManyParticipantsBody"] | components["schemas"]["TooManyRepetitionsBody"];
+                    "application/json": components["schemas"]["TooManyParticipantsApiErrorModel"] | components["schemas"]["TooManyRepetitionsApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1501,7 +1501,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TooManySimulationsBody"];
+                    "application/json": components["schemas"]["TooManySimulationsApiErrorModel"];
                 };
             };
         };
@@ -1532,7 +1532,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
         };
@@ -1565,7 +1565,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1574,7 +1574,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1616,7 +1616,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1625,7 +1625,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1667,7 +1667,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1676,7 +1676,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
@@ -1718,7 +1718,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UnauthorizedBody"];
+                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
             /** @description `not_found`: Requested resource does not exist */
@@ -1727,7 +1727,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotFoundBody"];
+                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
                 };
             };
             /** @description Validation Error */
