@@ -3,56 +3,22 @@ import createClient, { type Middleware } from "openapi-fetch";
 import type { components, paths } from "/generated/schemas";
 import { config } from "/config";
 import { ApiError, throwOnErrorMiddleware } from "/api/errors";
+import createSelectors from "./selectors";
 
 // --- raw authentication --------------------------------------------------------------------------
 
 const rawClient = createClient<paths>({
   baseUrl: config.apiUrl,
+  credentials: "include",
 });
 rawClient.use(throwOnErrorMiddleware);
 
 type AuthSession = components["schemas"]["LoginOutSchema"];
 
-/** shared refresh promise */
-let refreshPromise: Promise<boolean> | null = null;
-
-async function refreshSession(): Promise<AuthSession | null> {
+async function refreshSession(): Promise<AuthSession> {
   const { data } = await rawClient.POST("/auth/refresh");
-  return new Promise((_resolve, _reject) => data);
-}
-
-export async function refreshCurrentAccessToken(): Promise<boolean> {
-  if (!refreshPromise) {
-    refreshPromise = refreshSession()
-      .then((session) => {
-        useAuthStore.getState().setAuthenticated(session);
-        return true;
-      })
-      .catch((e) => {
-        if (e instanceof ApiError) {
-          const f = useAuthStore.getState().setUnauthenticated;
-          if (e.body.code === "banned") f("banned");
-          else f("expired");
-        }
-        return false;
-      })
-      .finally(() => {
-        refreshPromise = null;
-      });
-  }
-  return refreshPromise;
-}
-
-export async function getCurrentAccessToken(): Promise<string | null> {
-  const state = useAuthStore.getState();
-  if (state.status === "authenticated") return state.access_token;
-  if (state.status === "unauthenticated") return null;
-
-  // During initial restoration, wait for the single initialization operation.
-  // Check initialization late, because it happens rarely
-  await state.initialize();
-  const next = useAuthStore.getState();
-  return next.status === "authenticated" ? next.access_token : null;
+  if (!data) throw new Error("Refresh response is empty");
+  return data;
 }
 
 // --- store ---------------------------------------------------------------------------------------
@@ -63,67 +29,119 @@ export async function getCurrentAccessToken(): Promise<string | null> {
  * - **expired**: login session expired
  * - **banned**: user was banned
  */
-export type UnauthenticatedReason = "initial" | "logout" | "expired" | "banned";
+export type Reason = "initial" | "logout" | "expired" | "banned";
 
-export type AuthState =
+export type AuthStore =
   | { status: "initializing" }
-  | { status: "unauthenticated"; reason: UnauthenticatedReason }
-  | ({ status: "authenticated"; firstLogin: boolean } & AuthSession);
+  | { status: "unauthenticated"; reason: Reason }
+  | { status: "authenticated"; firstLogin: boolean; session: AuthSession };
 
-type AuthActions = {
-  /** Restore session from previous visit if possible */
-  initialize: () => Promise<void>;
-  loginWithGoogleIdToken: (identityToken: string) => Promise<void>;
-  logout: () => Promise<void>;
-  setAuthenticated: (session: AuthSession, firstLogin?: boolean) => void;
-  setUnauthenticated: (reason?: UnauthenticatedReason) => void;
-};
+const store = create<AuthStore>(() => ({
+  status: "initializing",
+}));
+export const useAuthStore = createSelectors(store);
 
-type AuthStore = AuthState & AuthActions;
+// --- actions -------------------------------------------------------------------------------------
 
 /** shared initialization promise */
 let initPromise: Promise<void> | null = null;
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
-  status: "initializing",
+export async function initializeSession() {
+  if (useAuthStore.getState().status !== "initializing") return;
+  if (!initPromise) {
+    initPromise = refreshSession()
+      .then((session) => {
+        if (session) setAuthenticated(session);
+        else setUnauthenticated("initial");
+      })
+      .catch((e) => {
+        if (e instanceof ApiError) {
+          if (e.body.code === "banned") setUnauthenticated("banned");
+          else setUnauthenticated("expired");
+        } else {
+          setUnauthenticated("initial");
+        }
+      })
+      .finally(() => {
+        initPromise = null;
+      });
+  }
+  await initPromise;
+}
 
-  initialize: async () => {
-    if (get().status !== "initializing") return;
-    if (!initPromise) {
-      initPromise = refreshSession()
-        .then((session) => {
-          if (session) set({ status: "authenticated", ...session });
-          else set({ status: "unauthenticated", reason: "initial" });
-        })
-        .catch(() => set({ status: "unauthenticated", reason: "initial" }))
-        .finally(() => {
-          initPromise = null;
-        });
-    }
-    await initPromise;
-  },
-
-  loginWithGoogleIdToken: async (identityToken) => {
+export async function loginWithGoogle(identityToken: string) {
+  try {
     const { data } = await rawClient.POST("/auth/login/google", {
       body: { id_token: identityToken },
     });
-    set({ status: "authenticated", ...data });
-  },
+    if (data) setAuthenticated(data);
+    else setUnauthenticated("expired");
+  } catch (e) {
+    if (e instanceof ApiError && e.body.code === "banned") setUnauthenticated("banned");
+    setUnauthenticated("expired");
+  }
+}
 
-  logout: async () => {
-    try {
-      await rawClient.POST("/auth/logout");
-    } finally {
-      set({ status: "unauthenticated" });
+export async function logout() {
+  try {
+    await rawClient.POST("/auth/logout");
+    setUnauthenticated("logout");
+  } catch (e) {
+    if (e instanceof ApiError) {
+      setUnauthenticated("logout");
+    } else {
+      // FIX: cannot delete session cookie on network errors
+      alert(`Could not reach backend, cannot guarantee logout\n${e}`);
     }
-  },
+  }
+}
 
-  setAuthenticated: (session, firstLogin: false) =>
-    set({ status: "authenticated", firstLogin, ...session }),
-  setUnauthenticated: (reason = "expired") => set({ status: "unauthenticated", reason: reason }),
-}));
+export function setAuthenticated(session: AuthSession, firstLogin: boolean = false) {
+  useAuthStore.setState({ status: "authenticated", firstLogin, session }, true);
+}
+
+export function setUnauthenticated(reason: Reason = "expired") {
+  useAuthStore.setState({ status: "unauthenticated", reason }, true);
+}
 
 // --- retry middleware ----------------------------------------------------------------------------
+
+async function getCurrentAccessToken(): Promise<string | null> {
+  const state = useAuthStore.getState();
+  if (state.status === "authenticated") return state.session.access_token;
+  if (state.status === "unauthenticated") return null;
+
+  // During initial restoration, wait for the single initialization operation.
+  // Check initialization late, because it happens rarely
+  await initializeSession();
+  const next = useAuthStore.getState();
+  return next.status === "authenticated" ? next.session.access_token : null;
+}
+
+/** shared refresh promise */
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshCurrentAccessToken(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = refreshSession()
+      .then((session) => {
+        setAuthenticated(session);
+        return true;
+      })
+      .catch((e) => {
+        if (e instanceof ApiError) {
+          if (e.body.code === "banned") setUnauthenticated("banned");
+          else setUnauthenticated("expired");
+        }
+        // network errors do not reset auth state
+        return false;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
 
 function newRequestWithAuthHeaders(request: Request, token: string): Request {
   const headers = new Headers(request.headers);

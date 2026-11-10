@@ -23,6 +23,8 @@ export class ApiError extends Error {
     const detail = "detail" in body ? body.detail : "";
     super(`ApiError: HTTP ${status}\n${body.message}\n${detail}`);
     this.name = "ApiError";
+    this.status = status;
+    this.body = body;
   }
 }
 
@@ -43,7 +45,7 @@ export function toApiErrorBody(value: unknown): ApiErrorBody | undefined {
 // --- middleware ----------------------------------------------------------------------------------
 
 async function throwFromResponse(response: Response): Promise<never> {
-  const body = await response.json();
+  const body = await response.json().catch(() => undefined);
   const apiErrorBody = toApiErrorBody(body);
   if (apiErrorBody) throw new ApiError(response.status, apiErrorBody);
   throw new HttpError(response.status, body);
