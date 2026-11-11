@@ -1,0 +1,76 @@
+{
+  "name": "Unnamed",
+  "entity_type": "normal",
+  "level": 5.0,
+  "strategy_level": 5,
+  "stats": {
+    "attributes": {
+      "strength": 10,
+      "dexterity": 10,
+      "constitution": 10,
+      "intelligence": 10,
+      "wisdom": 10,
+      "charisma": 10
+    },
+    "proficiency": 3,
+    "modifiers": {
+      "strength": 0,
+      "dexterity": 0,
+      "constitution": 0,
+      "intelligence": 0,
+      "wisdom": 0,
+      "charisma": 0
+    }
+  },
+  "health": {
+    "hit_points": 50,
+    "start_of_turn_heal": 0,
+    "resistances": [],
+    "immunities": [],
+    "vulnerabilities": []
+  },
+  "combat": {
+    "armor_class": 10,
+    "to_hit": 7,
+    "damage": 10.0,
+    "offhand_damage": 0.0,
+    "damage_type": "slashing",
+    "attacks": 1,
+    "has_range_attack": false
+  },
+  "position": {
+    "speed": 30,
+    "position": "front"
+  },
+  "magic": {
+    "spell_modifier": 0,
+    "spell_save_dc": 10,
+    "spell_slots": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "spell_list": [],
+    "sorcery_points": 0,
+    "ki_points": 0
+  },
+  "saves": {
+    "proficiencies": [],
+    "legendary_resistances": 0
+  },
+  "abilities": {
+    "other_abilities": "",
+    "sneak_attack_dmg": 0.0,
+    "lay_on_hands_pool": 0,
+    "inspiration": 0,
+    "druid_cr": 0.0,
+    "destroy_undead_cr": 0.0,
+    "channel_divinity": 0,
+    "action_surges": 0,
+    "rage_dmg": 0.0,
+    "aoe_recharge_dmg": 0.0,
+    "aoe_recharge_dc": 0,
+    "aoe_save_type": 0,
+    "aoe_recharge_area": 0,
+    "aoe_recharge_probability": 0.0,
+    "aoe_recharge_type": "fire",
+    "favored_foe_dmg": 0.0
+  },
+  "hero_or_villain": 0
+}
