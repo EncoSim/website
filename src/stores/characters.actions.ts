@@ -49,7 +49,7 @@ function editable(localId: string): Editable {
 function resolveSync(rec: Editable, data: CharData): Editable {
   if (rec.sync === "local") return { ...rec, data };
   return deepEqual(data, rec.remote.data)
-    ? { ...rec, sync: "synced" }
+    ? { ...rec, sync: "synced", data: rec.remote.data } // next comparison is fast
     : { ...rec, sync: rec.sync, data };
 }
 
@@ -102,6 +102,7 @@ export function resolveConflict(localId: string, keep: "mine" | "theirs") {
 function mergeRemoteVersion(localId: string, server: CharDownload) {
   const cur = get().characters[localId];
   if (!cur || cur.sync === "local" || cur.sync === "deleted") return;
+  if (server.version <= cur.remote.version) return; // an update arrived late and is now stale
   if (cur.sync === "synced" || deepEqual(cur.data, server.data)) {
     put(asSynced(localId, server));
   } else {
