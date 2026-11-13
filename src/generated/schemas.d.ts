@@ -170,47 +170,19 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Job List */
-        get: operations["job_list_simulation_get"];
+        /**
+         * List Simulations
+         * @description All simulations of the user, pending and finished, newest first.
+         */
+        get: operations["list_simulations_simulation_get"];
         put?: never;
-        /** Simulate */
+        /**
+         * Simulate
+         * @description Start a simulation. Short simulations are answered with their result directly,
+         *     otherwise the response is `pending` and the simulation can be polled by its `task_id`.
+         */
         post: operations["simulate_simulation_post"];
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/simulation/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Simulation History */
-        get: operations["simulation_history_simulation_history_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/simulation/history/{task_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Simulation History Item */
-        get: operations["simulation_history_item_simulation_history__task_id__get"];
-        put?: never;
-        post?: never;
-        /** Delete Simulation History Item */
-        delete: operations["delete_simulation_history_item_simulation_history__task_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -223,12 +195,38 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Job Status */
-        get: operations["job_status_simulation__task_id__get"];
+        /**
+         * Get Simulation
+         * @description A single simulation, pending or finished.
+         */
+        get: operations["get_simulation_simulation__task_id__get"];
         put?: never;
         post?: never;
-        /** Abort Job */
-        delete: operations["abort_job_simulation__task_id__delete"];
+        /**
+         * Delete Simulation
+         * @description Delete the record of a finished simulation. Pending simulations have to be aborted first.
+         */
+        delete: operations["delete_simulation_simulation__task_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/simulation/{task_id}/abort": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Abort Simulation
+         * @description Abort a pending simulation. It stays in the list as a failed (aborted) simulation.
+         */
+        post: operations["abort_simulation_simulation__task_id__abort_post"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -673,52 +671,47 @@ export interface components {
              */
             teams: number[][];
         };
-        /** SimulationFinished */
-        SimulationFinished: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            status: "failed" | "success";
-            /** Summary */
-            summary: string;
-        };
-        /** SimulationList */
-        SimulationList: {
-            /** Ids */
-            ids: string[];
-        };
-        /** SimulationPending */
-        SimulationPending: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            status: "pending";
-            /** Task Id */
-            task_id: string;
-        };
-        /** SimulationRecord */
-        SimulationRecord: {
+        /**
+         * SimulationPendingRecord
+         * @description A simulation that is queued or running.
+         */
+        SimulationPendingRecord: {
             /** Task Id */
             task_id: string;
             config: components["schemas"]["SimulationConfig"];
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "failed" | "success";
-            /** Result */
-            result?: string | null;
-            /** Summary */
-            summary: string;
-            /** Error Type */
-            error_type?: string | null;
             /**
              * Submitted At
              * Format: date-time
              */
             submitted_at: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            status: "pending";
+        };
+        /**
+         * SimulationRecord
+         * @description A finished simulation as kept in the user's history.
+         */
+        SimulationRecord: {
+            /** Task Id */
+            task_id: string;
+            config: components["schemas"]["SimulationConfig"];
+            /**
+             * Submitted At
+             * Format: date-time
+             */
+            submitted_at: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            status: "failed" | "success";
+            /** Summary */
+            summary: string;
+            /** Error Type */
+            error_type?: string | null;
             /**
              * Finished At
              * Format: date-time
@@ -1413,7 +1406,7 @@ export interface operations {
             };
         };
     };
-    job_list_simulation_get: {
+    list_simulations_simulation_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1428,7 +1421,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SimulationList"];
+                    "application/json": (components["schemas"]["SimulationPendingRecord"] | components["schemas"]["SimulationRecord"])[];
                 };
             };
             /** @description `unauthorized`: Could not validate credentials */
@@ -1463,7 +1456,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SimulationFinished"] | components["schemas"]["SimulationPending"];
+                    "application/json": components["schemas"]["SimulationPendingRecord"] | components["schemas"]["SimulationRecord"];
                 };
             };
             /** @description `unauthorized`: Could not validate credentials */
@@ -1506,38 +1499,7 @@ export interface operations {
             };
         };
     };
-    simulation_history_simulation_history_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SimulationRecord"][];
-                };
-            };
-            /** @description `unauthorized`: Could not validate credentials */
-            401: {
-                headers: {
-                    /** @description Bearer authentication challenge (present for invalid/missing bearer credentials). */
-                    "WWW-Authenticate"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
-                };
-            };
-        };
-    };
-    simulation_history_item_simulation_history__task_id__get: {
+    get_simulation_simulation__task_id__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1554,7 +1516,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SimulationRecord"];
+                    "application/json": components["schemas"]["SimulationPendingRecord"] | components["schemas"]["SimulationRecord"];
                 };
             };
             /** @description `unauthorized`: Could not validate credentials */
@@ -1588,7 +1550,7 @@ export interface operations {
             };
         };
     };
-    delete_simulation_history_item_simulation_history__task_id__delete: {
+    delete_simulation_simulation__task_id__delete: {
         parameters: {
             query?: never;
             header?: never;
@@ -1639,58 +1601,7 @@ export interface operations {
             };
         };
     };
-    job_status_simulation__task_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                task_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SimulationFinished"] | components["schemas"]["SimulationPending"];
-                };
-            };
-            /** @description `unauthorized`: Could not validate credentials */
-            401: {
-                headers: {
-                    /** @description Bearer authentication challenge (present for invalid/missing bearer credentials). */
-                    "WWW-Authenticate"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
-                };
-            };
-            /** @description `not_found`: Requested resource does not exist */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NotFoundApiErrorModel"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    abort_job_simulation__task_id__delete: {
+    abort_simulation_simulation__task_id__abort_post: {
         parameters: {
             query?: never;
             header?: never;
