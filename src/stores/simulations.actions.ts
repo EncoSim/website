@@ -84,18 +84,20 @@ export function buildConfig(
 ): SimConfig {
   const index = new Map<string, number>();
   const participants: SimConfig["participants"] = [];
-  const teams = draft.teams.map((team) =>
-    team.map((localId) => {
-      let i = index.get(localId);
-      if (i === undefined) {
-        const rec = characters[localId];
-        if (!rec || rec.sync === "deleted") throw new MissingCharacterError(localId);
-        i = participants.push(rec.data) - 1;
-        index.set(localId, i);
-      }
-      return i;
-    }),
-  );
+  const teams = draft.teams
+    .filter((t) => t.length > 0)
+    .map((team) =>
+      team.map((localId) => {
+        let i = index.get(localId);
+        if (i === undefined) {
+          const rec = characters[localId];
+          if (!rec || rec.sync === "deleted") throw new MissingCharacterError(localId);
+          i = participants.push(rec.data) - 1;
+          index.set(localId, i);
+        }
+        return i;
+      }),
+    );
   return { repetitions: draft.repetitions, participants, teams };
 }
 

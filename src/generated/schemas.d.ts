@@ -155,7 +155,7 @@ export interface paths {
         post?: never;
         /**
          * Delete Profile
-         * @description Hard-delete the user, their sessions and their characters.
+         * @description Hard-delete all user data.
          */
         delete: operations["delete_profile_user_profile_delete"];
         options?: never;
@@ -584,8 +584,9 @@ export interface components {
         };
         /** ManySessionsSchema */
         ManySessionsSchema: {
-            /** Sessions */
-            sessions: components["schemas"]["SessionSchema"][];
+            current: components["schemas"]["SessionSchema"];
+            /** Other */
+            other: components["schemas"]["SessionSchema"][];
         };
         /** NotFoundApiErrorModel */
         NotFoundApiErrorModel: {
@@ -1470,13 +1471,13 @@ export interface operations {
                     "application/json": components["schemas"]["UnauthorizedApiErrorModel"];
                 };
             };
-            /** @description `too_many_participants`: Exceeded total number of allowed simulation participants; `too_many_repetitions`: Exceeded total number of allowed simulation repetitions */
+            /** @description `too_many_repetitions`: Exceeded total number of allowed simulation repetitions; `too_many_participants`: Exceeded total number of allowed simulation participants */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TooManyParticipantsApiErrorModel"] | components["schemas"]["TooManyRepetitionsApiErrorModel"];
+                    "application/json": components["schemas"]["TooManyRepetitionsApiErrorModel"] | components["schemas"]["TooManyParticipantsApiErrorModel"];
                 };
             };
             /** @description Validation Error */

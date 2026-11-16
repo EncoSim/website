@@ -1,7 +1,7 @@
 import { produce } from "immer";
 import { client } from "/api/client";
 import { ApiError } from "/api/errors";
-import { setAt, type Path, type PathValue } from "/api/paths";
+import { setAt, type Path, type PathValue } from "/lib/paths";
 import { createDefault } from "/stores/characters.default";
 import {
   useCharacterStore,
@@ -48,9 +48,11 @@ function editable(localId: string): Editable {
 /** update the data of a character record and resolve the sync status */
 function resolveSync(rec: Editable, data: CharData): Editable {
   if (rec.sync === "local") return { ...rec, data };
-  return deepEqual(data, rec.remote.data)
-    ? { ...rec, sync: "synced", data: rec.remote.data } // next comparison is fast
-    : { ...rec, sync: rec.sync, data };
+  if (deepEqual(data, rec.remote.data)) {
+    return { ...rec, sync: "synced", data: rec.remote.data }; // next comparison is fast
+  }
+  // a changed synced/modified character is "modified"; a conflict stays a conflict until resolved
+  return rec.sync === "conflict" ? { ...rec, data } : { ...rec, sync: "modified", data };
 }
 
 function edit(localId: string, recipe: (draft: CharData) => void) {

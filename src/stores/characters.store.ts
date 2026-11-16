@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { useShallow } from "zustand/react/shallow";
 import type { components } from "/generated/schemas";
-import { getAt, type Path, type PathValue } from "/api/paths";
+import { getAt, type Path, type PathValue } from "/lib/paths";
 
 export type CharData = components["schemas"]["EntityConfig"];
 export type CharUpload = components["schemas"]["CharUpload"];

@@ -1,1 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap");
 @import "tailwindcss";
+
+@theme {
+  --default-font-family: "Crimson Text", ui-serif, Georgia, serif;
+  --font-fancy: "Cinzel", ui-serif, Georgia, serif;
+  --color-base-1: #0f1419;
+  --color-base-2: #202b35;
+  --color-base-3: #2d3b49;
+  --color-accent-1: #d97706;
+  --color-accent-2: #c09d67;
+}
+
+:root {
+  color-scheme: dark;
+  background-color: var(--color-base-1);
+  color: white;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-base-3 px-4 text-sm font-semibold
+      select-none hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50
+      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-2;
+  }
+  .btn-primary {
+    @apply bg-linear-to-br from-accent-1 to-amber-500 text-white hover:brightness-110;
+  }
+  .btn-danger {
+    @apply bg-red-900/70 hover:bg-red-800;
+  }
+  .btn-ghost {
+    @apply bg-transparent hover:bg-white/10;
+  }
+  .btn-icon {
+    @apply min-w-11 px-0;
+  }
+  .input {
+    @apply min-h-11 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-base
+      placeholder:text-white/30 focus-visible:outline-2 focus-visible:outline-accent-2 disabled:text-slate-400;
+  }
+  .card {
+    @apply rounded-xl bg-base-2;
+  }
+  .label {
+    @apply mb-1 block text-sm text-white/70;
+  }
+}
