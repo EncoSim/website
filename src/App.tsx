@@ -7,7 +7,7 @@ import { HomePage } from "/components/home/HomePage";
 import { SimulationPage } from "/components/simulation/SimulationPage";
 import { routes } from "/routes";
 import { PrivacyPage } from "/components/legal/PrivacyPage";
-import { ImpressumPage } from "/components/legal/ImpressumPage";
+import { ImprintPage } from "/components/legal/ImpressumPage";
 import { AccountPage } from "/components/account/AccountPage";
 import { useAuthStore } from "/stores/auth.store";
 
@@ -37,19 +37,9 @@ export default function App() {
  */
 function SessionRestore({ children }: { children: ReactNode }) {
   const status = useAuthStore.use.status();
-  const [initialRestoreFinished, setInitialRestoreFinished] = useState(false);
-
-  useEffect(() => {
-    if (status !== "initializing") setInitialRestoreFinished(true);
-  }, [status]);
 
   if (status === "initializing") {
     return <div className="grid min-h-dvh place-items-center text-white/70">Loading session…</div>;
   }
-
-  if (!initialRestoreFinished && status !== "authenticated") {
-    return <Navigate to={routes.home} replace />;
-  }
-
   return <>{children}</>;
 }
