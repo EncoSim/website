@@ -7,6 +7,6 @@ export const routes = {
   character: (localId: string) => `/characters/${localId}`,
   simulation: "/simulation",
   account: "/account",
-  impressum: "/impressum",
+  imprint: "/imprint",
   privacy: "/privacy",
 } as const;

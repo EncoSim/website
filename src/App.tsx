@@ -22,7 +22,7 @@ export default function App() {
           <Route path="simulation" element={<SimulationPage />} />
           <Route path="account" element={<AccountPage />} />
           <Route path="privacy" element={<PrivacyPage />} />
-          <Route path="impressum" element={<ImpressumPage />} />
+          <Route path="imprint" element={<ImprintPage />} />
           <Route path="*" element={<Navigate to={routes.home} replace />} />
         </Route>
       </Routes>
