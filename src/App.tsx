@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import { AppShell } from "/components/layout/AppShell";
 import { LoginPage } from "/components/login/LoginPage";

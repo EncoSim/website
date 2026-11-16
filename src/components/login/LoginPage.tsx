@@ -7,7 +7,6 @@ import { config } from "/config";
 import { loginWithGoogle, useAuthStore } from "/stores/auth.store";
 import { EncosimIcon } from "/components/layout/Icons";
 import { routes } from "/routes";
-import { PayPalDonation } from "/components/ui/PayPalDonation";
 
 export function LoginPage() {
   const status = useAuthStore.use.status();
@@ -84,7 +83,6 @@ export function LoginPage() {
           Continue without signing in
         </Link>
       </div>
-      {/*<PayPalDonation />*/}
     </div>
   );
 }
