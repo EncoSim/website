@@ -11,7 +11,7 @@ const HEADER_NAC = [
 ] as const;
 
 const FOOTER_NAV = [
-  { to: routes.imprint, label: "Impressum" },
+  { to: routes.imprint, label: "Imprint" },
   { to: routes.privacy, label: "Privacy" },
 ] as const;
 
